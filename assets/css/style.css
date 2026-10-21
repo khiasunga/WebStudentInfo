@@ -1,147 +1,143 @@
-* {
-    margin: 0;
-    padding: 0;
-    outline: 0;
-}
+    * {
+        margin: 0;
+        padding: 0;
+        outline: 0;
+    }
 
-body {
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 16px;
-    background-color: #171817;
-    color: rgb(3, 5, 8);
-    font-weight: 300;
-}
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 16px;
+        background-color: darkslateblue;
+        color: white;
+        font-weight: 300;
+    }
 
-.maincontainer {
-    width: 100%;
-    display: grid;
-    grid-template-columns: auto 30%;
-    overflow-x: hidden;
-}
+    .main-container {
+        width: 100%;
+        display: grid;
+        grid-template-columns: auto 30%;
+        overflow-x: hidden;
+    }
 
-.col1 {
-    background-color: rgb(211, 228, 213);
-    padding: 0 0.5rem;
-}
+    .col1 {
+        padding: 0 0.5rem;
+    }
 
-.col2 {
-    background-color: rgb(185, 226, 190);
-    padding: 0 0.5rem;
-}
+    .col2 {
+        padding: 0 0.5rem;
+    }
 
-/*------------------------- Column 1 -------------------------*/
+    /*-------------------- Column 1 -------------------- */
+    .header {
+        display: flex;
+        padding: 0.5em;
+    }
 
-.header {
-    display: flex;
-    padding: 0.5rem;
-    font-size: 25px;
-    font-weight: 500;
-    letter-spacing: 0.2rem;
-}
+    .header h1 {
+        font-size: 30px;
+        font-weight: 500;
+        letter-spacing: 0.2rem;
+    }
 
-.table-container {
-    height: 80vh;
-    border-radius: 10px;
-    overflow-y: hidden;
-}
+    .table-container {
+        height: 80vh;
+        border-radius: 10px;
+        overflow-y: auto;
+    }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    background-color:white;
-}
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: darkorchid;
+    }
 
-thead {
-    position: sticky;
-    top: 0;
-    background-color: white;
-}
+    thead {
+        position: sticky;
+        top: 0;
+        background-color: #e130e1;
+    }
 
-th {
-    padding: 0.1rem 0.5rem;
-    text-align: center;
-    font-size: 16px;
-    text-transform: uppercase;
-    font-weight: 300;
-}
+    th {
+        padding: 0.1rem 0.5rem;
+        text-align: center;
+        font-size: 14px;
+        text-transform: uppercase;
+        font-weight: 300;
+    }
 
-tbody tr {
-    transition: all 0.1 ease-in-out;
-}
+    tbody tr {
+        transform: all 0.1s ease-in-out;
+    }
 
-td {
-    padding: 0.1rem 0.5rem;
-    text-align: center;
-    font-size: 14px;
-    border-bottom: 1px solid;
-}
+    td {
+        padding: 0.1rem 0.5rem;
+        text-align: center;
+        font-size: 16px;
+        border-bottom: 1px solid #631164;
+    }
 
-tbody tr:nth-child(even) {
-    background-color: white;
-}
+    tbody tr:nth-child(even) {
+        background-color: #7c3aee;
+    }
 
-tbody tr:hover {
-    background-color: rgb(130, 212, 119);
-    color: rgb(0, 0, 0);
-}
+    tbody tr:hover {
+        background-color: #00fa9a;
+        color: #000000;
+    }
 
-/*------------------------- Column 2 -------------------------*/
-.col2-header-container {
-    display: flex;
-    justify-content: space-between;
-    padding: 0.5rem;
-}
+    /*-------------------- Column 2 -------------------- */
+    .col2-header-container {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem;
+    }
 
-.col2-header h2 {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.1rem;
-}
+    .col2-header h2 {
+        font-size: 18px;
+        font-weight: 600;
+        letter-spacing: 0.1rem;
+    }
+     .col2-header p {
+        font-size: 11px;
+        font-weight: 300;
+        color: #9932cc;
+    }
+    .action-btn-container {
+        display: flex;
+        float: right;
+    }
 
-.col2-header p {
-    font-size: 11px;
-    font-weight: 300;
-    color: #000000;
-}
 
-.class-action-btn-container {
-    display: flex;
-    float: right;
-}
+    /*-------------------- Buttons -------------------- */
+    .button {
+        display: block;
+        padding: 0.5rem 1rem;
+        font-size: 14px;
+        background-color: deeppink;
+        border: none;
+        border-radius: 10px;
+        color: white;
+        cursor: pointer;
+        width: 4rem;
+        margin: 0.2rem;
+    }
 
-/*------------------------- Buttons -------------------------*/
+    .btn.add {
+        background-color: darkviolet;
+        margin-left: 1rem;
+    }
 
-.button {
-    display: block;
-    padding: 0.5rem 1rem;
-    font-size: 16px;
-    background-color: #070406;
-    border: none;
-    border-radius: 10px;
-    margin-left: 1rem;
-    color: #ffffff;
-    cursor: pointer;
-    width: 4rem;
-    margin: 0.2rem;
-}
+    .btn-edit {
+        background-color: #00fa9a;
+    }
 
-.btn-add {
-    background-color: black;
-    margin-left: 1rem;
-}
+    .btn-delete, .btn-cancel{
+        background-color: #7c3aee;
+    }
 
-.btn-edit {
-    background-color: #000000;
-}
+    /*-------------------- Textbox -------------------- */
 
-.btn-delete,
-.btn-cancel {
-    background-color: #000000;
-}
-
-/*------------------------- textbox -------------------------*/
-
-.textbox {
+.textbox{
     position: relative;
     margin: 1rem;
     overflow: hidden;
@@ -151,12 +147,12 @@ tbody tr:hover {
     width: 100%;
     height: 80%;
     border: none;
-    color: #000000;
+    color: white;
+    background-color: transparent;
     padding-top: 20px;
     font-size: 18px;
     outline: none;
     text-transform: uppercase;
-    background-color: transparent;
 }
 
 .txtbox-label {
@@ -166,7 +162,7 @@ tbody tr:hover {
     width: 100%;
     height: 100%;
     pointer-events: none;
-    border-bottom: 1px solid #000000;
+    border-bottom: 1px solid black;
 }
 
 .txtbox-label::after {
@@ -174,42 +170,76 @@ tbody tr:hover {
     position: absolute;
     width: 100%;
     height: 100%;
-    bottom: -1;
-    left: 0;
-    border-bottom: 2px solid #000000;
-    transform: translateX(-100%);
+    bottom: -2px;
+    border-bottom: 2px solid deeppink;
+    transform:translateX(-100%);
     transition: all 0.3s ease;
 }
 
 .placeholder {
-    position: absolute;
-    font-size: 18px;
-    bottom: 0;
-    left: 0;
-    transition: all 0.3s ease;
+ position: absolute;
+ font-size: 18px;
+ bottom: 7px;
+ left: 0;
+ transition: all 0.3s ease;   
 }
 
-.textbox input:focus+.txtbox-label .placeholder,
-.textbox input:valid+.txtbox-label .placeholder {
+.textbox input:focus+ .txtbox-label .placeholder,
+.textbox input:valid+ .txtbox-label .placeholder,
+.option-box select:focus+ .txtbox-label .placeholder,
+.option-box select:valid+ .txtbox-label .placeholder
+{
     transform: translateY(-150%);
     font-size: 12px;
-    color: #000000;
+    color: deeppink;
 }
 
-.textbox input:focus+.txtbox-label::after,
-.textbox input:valid+.txtbox-label::after {
-    transform: translateX(0)
-}
+.textbox input:focus+ .txtbox-label::after,
+.textbox input:valid+ .txtbox-label::after,
+.option-box select:focus+ .txtbox-label::after,
+.option-box select:valid+ .txtbox-label::after
+{
+    transform: translateX(0%);
 
+}
 
 .display-none {
     display: none;
 }
 
-.default-text .txtbox-label {
+.default-text .txtbox-label{
     border-bottom: 0px;
 }
 
-.placeholder span {
-    color: #9e87c2;
+.placeholder span{
+    color: #39e3f6;
+}
+
+/* -------------------- Option Box -------------------- */
+
+.option-box{
+    position: relative;
+    margin: 1rem;
+    overflow: hidden;
+}
+
+.option-box select{
+    width: 100%;
+    height: 58px;
+    padding: 20px 1.8rem 0 0;
+    border: none;
+    color: white;
+    background-color: transparent;
+    font: inherit;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.option-box select:disabled{
+    color: transparent;
+}
+
+.option-box select option{
+    color: white;
+    background-color: #2b282c;
 }

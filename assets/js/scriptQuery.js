@@ -1,7 +1,7 @@
 let students = [];
 let formMode = "Add";
 let selectedStudentID = -1;
-const baseURL = "http://192.168.100.154/student-info/tae/assets/php/student.php";
+const baseURL = "http://192.168.100.160/student-info/tae/assets/php/student.php";
 
 const $tbody = $("#student-data");
 
@@ -9,7 +9,7 @@ const $addBtn = $("#add-btn");
 const $editBtn = $("#edit-btn");
 const $deleteBtn = $("#delete-btn");
 const $saveBtn = $("#save-btn");
-const $cancelBtn = $("#cancel-btn");
+const $cancelBtn = $("#cancel-btn");    
 
 const $txtLastname = $("#txt-lastname");
 const $txtFirstname = $("#txt-firstname");
@@ -30,6 +30,8 @@ const $placeholderEmail = $("#placeholder-email");
 $(document).ready(function () {
   resetForm();
   fetchStudentData();
+  fetchAcadLevelData();
+  fetchSectionData();
 });
 
 $addBtn.on("click", function () {
@@ -47,32 +49,114 @@ $editBtn.on("click", function () {
   populateFormFields(getStudentById(selectedStudentID));
 });
 
-$deleteBtn.on("click", function () {});
+$deleteBtn.on("click", function () {
+  if (selectedStudentID === -1) return;
+
+  if (confirm("Are you sure you want to delete this student?")) {
+    $deleteBtn.prop("disabled", true).val("Deleting...");
+    deleteStudent(selectedStudentID)
+      .done(function (response) {
+        if (!response.success) {
+          alert(response.error || "Unable to delete student.");
+          return;
+        }
+
+        resetForm();
+        fetchStudentData();
+      })
+      .fail(function (xhr) {
+        const response = xhr.responseJSON || {};
+        const message = response.error || "Unable to delete student.";
+        alert(message);
+      })
+      .always(function () {
+        $deleteBtn.prop("disabled", false).val("Delete");
+      });
+  }
+});
 
 
 $saveBtn.on("click", function () {
-    if (validateForm().length > 0) {
-        return;
-    }
+  if (validateForm().length > 0) {
+    return;
+  }
 
-    if (formMode === "Add") {
-        addStudent();
-    }
+  if (formMode === "Add") {
+    $saveBtn.prop("disabled", true).val("Saving...");
 
-    if (formMode === "Edit") {
-        editStudent();
-    }
+    const student = {
+      lastname: $txtLastname.val(),
+      firstname: $txtFirstname.val(),
+      middlename: $txtMiddlename.val(),
+      gender: $txtGender.val(),
+      acadlevel_id: $txtYearLevel.val(),
+      section_id: $txtSection.val(),
+      email: $txtEmail.val(),
+    };
 
-    resetForm();
+    addStudent(student)
+      .done(function (response) {
+        if (!response.success) {
+          alert(response.error || "Unable to add student.");
+          return;
+        }
 
-    displayStudentDetails(
-        getStudentById(selectedStudentID)
-    );
+        resetForm();
+        fetchStudentData();
 
-    fetchStudentData();
+        displayStudentDetails(getStudentById(selectedStudentID));
+      })
+      .fail(function (xhr) {
+        const response = xhr.responseJSON || {};
+        const message = response.error || "Unable to add student.";
+        alert(message);
+      })
+      .always(function () {
+        $saveBtn.prop("disabled", false).val("Save");
+      });
+  }
+
+  if (formMode === "Edit") {
+    $saveBtn.prop("disabled", true).val("Saving...");
+
+    const student = {
+      id: selectedStudentID,
+      lastname: $txtLastname.val(),
+      firstname: $txtFirstname.val(),
+      middlename: $txtMiddlename.val(),
+      gender: $txtGender.val(),
+      acadlevel_id: $txtYearLevel.val(),
+      section_id: $txtSection.val(),
+      email: $txtEmail.val(),
+    };
+
+    editStudent(student)
+      .done(function (response) {
+        if (!response.success) {
+          alert(response.error || "Unable to update student.");
+          return;
+        }
+
+        resetForm();
+        fetchStudentData();
+
+        displayStudentDetails(getStudentById(selectedStudentID));
+      })
+      .fail(function (xhr) {
+        const response = xhr.responseJSON || {};
+        const message = response.error || "Unable to update student.";
+        alert(message);
+      })
+      .always(function () {
+        $saveBtn.prop("disabled", false).val("Save");
+      });
+  }
 });
 
-$cancelBtn.on("click", function () {});
+$cancelBtn.on("click", function () {
+  displayStudentDetails(getStudentById(selectedStudentID));
+  resetForm();
+});
 
 function resetForm() {
   toggleButtons(false, false);
@@ -89,7 +173,7 @@ function renderStudents() {
     $("<td></td>").text(student.firstname).appendTo($row);
     $("<td></td>").text(student.middlename).appendTo($row);
     $("<td></td>").text(student.gender).appendTo($row);
-    $("<td></td>").text(student.year_level).appendTo($row);
+    $("<td></td>").text(student.acadlevel).appendTo($row);
     $("<td></td>").text(student.section).appendTo($row);
     $("<td></td>").text(student.email).appendTo($row);
 
@@ -112,7 +196,7 @@ function displayStudentDetails(student) {
   $("#placeholder-value-firstname").text(student.firstname);
   $("#placeholder-value-middlename").text(student.middlename);
   $("#placeholder-value-gender").text(student.gender);
-  $("#placeholder-value-year-level").text(student.year_level);
+  $("#placeholder-value-year-level").text(student.acadlevel);
   $("#placeholder-value-section").text(student.section);
   $("#placeholder-value-email").text(student.email);
 }
@@ -126,8 +210,8 @@ function populateFormFields(student) {
   $txtFirstname.val(student.firstname);
   $txtMiddlename.val(student.middlename);
   $txtGender.val(student.gender);
-  $txtYearLevel.val(student.year_level);
-  $txtSection.val(student.section);
+  $txtYearLevel.val(student.acadlevel_id);
+  $txtSection.val(student.section_id);
   $txtEmail.val(student.email);
 }
 
@@ -146,6 +230,7 @@ function toggleButtons(
 
 function enableFormFields(enable = false) {
   $(".textbox").toggleClass("default-text", !enable);
+  $(".option-box").toggleClass("default-text", !enable);
 
   const $inputs = $(
     "#txt-lastname, " +
@@ -269,6 +354,85 @@ function fetchStudentData() {
     });
 }
 
+
+function fetchAcadLevelData(){
+  const $placeholder = $("<option></option>")
+  .val("")
+  .text("")
+  .attr("disabled", true)
+  .attr("selected", true)
+  .prop("hidden", true);
+
+  $txtYearLevel.empty().append($placeholder.clone());
+
+  getAllAcadLevel()
+    .done(function (response) {
+    $txtYearLevel.empty().append($placeholder);
+    
+    if (!response.success || !Array.isArray(response.data) || response.data.length === 0) {
+      $("<option></option>")
+        .val("")
+        .text("No year levels available")
+        .appendTo($txtYearLevel);
+      return;
+    }
+ 
+    response.data.forEach(function (acadLevel) {
+      $("<option></option>")
+        .val(acadLevel.id)
+        .text(acadLevel.name)
+        .appendTo($txtYearLevel);
+    });
+
+    })
+    .fail(function (){
+      $txtYearLevel.empty().append($placeholder);
+      $("<option></option>")
+        .val("")
+        .text("Unable to fetch year levels")
+        .appendTo($txtYearLevel);
+    })
+}
+
+function fetchSectionData(){
+  const $placeholder = $("<option></option>")
+  .val("")
+  .text("")
+  .attr("disabled", true)
+  .attr("selected", true)
+  .prop("hidden", true);
+
+  $txtSection.empty().append($placeholder.clone());
+
+  getAllSections()
+    .done(function (response) {
+    $txtSection.empty().append($placeholder);
+    
+    if (!response.success || !Array.isArray(response.data) || response.data.length === 0) {
+      $("<option></option>")
+        .val("")
+        .text("No section available")
+        .appendTo($txtSection);
+      return;
+    }
+ 
+    response.data.forEach(function (acadLevel) {
+      $("<option></option>")
+        .val(acadLevel.id)
+        .text(acadLevel.name)
+        .appendTo($txtSection);
+    });
+
+    })
+    .fail(function (){
+      $txtSection.empty().append($placeholder);
+      $("<option></option>")
+        .val("")
+        .text("Unable to fetch year levels")
+        .appendTo($txtSection);
+    })
+}
+
 function showTableMessage(message) {
   const $row = $("<tr></tr>");
   $("<td></td>").attr("colspan", 7).text(message).appendTo($row);
@@ -277,18 +441,22 @@ function showTableMessage(message) {
 }
 
 function normalizeStudent(student) {
+  gender = student.gender === "M" ? "Male" : 
+   student.gender === "F" ? "Female" : 
+   student.gender === "T" ? "Transformer" : student.gender;
+
   return {
     id: Number(student.id),
     lastname: student.lastname || "",
     firstname: student.firstname || "",
     middlename: student.middlename || "",
-    gender: student.gender || "",
-    year_level: student.acadlevel_name || student.year_level || "",
-    section: student.section_name || student.section || "",
+    gender: gender || "",
+    acadlevel: student.acadlevel_name || "",
+    section: student.section_name || "",
     email: student.email || "",
     acadlevel_id: student.acadlevel_id || "",
     section_id: student.section_id || "",
-  };
+  };    
 }
 
 function getStudentById(studentId) {
@@ -306,16 +474,55 @@ function getAllStudents() {
   });
 }
 
-function addStudent() {
-    var student 
-
-
-
+function getAllAcadLevel() {
   return $.ajax({
-    url: API_URL,
+    url: baseURL,
+    type: "GET",
+    data: {
+      "get-all-acadlevel": 1,
+    },
+    dataType: "json",
+  });
+
+}
+function getAllSections() {
+  return $.ajax({
+    url: baseURL,
+    type: "GET",
+    data: {
+      "get-all-sections": 1,
+    },
+    dataType: "json",
+  });
+}
+
+function addStudent(student) {
+  
+  return $.ajax({
+    url: baseURL,
     type: "POST",
     contentType: "application/json",
     data: JSON.stringify(student),
+    dataType: "json",
+  });
+}
+
+function editStudent(student) {
+  return $.ajax({
+    url: baseURL,
+    type: "PUT",
+    contentType: "application/json",
+    data: JSON.stringify(student),
+    dataType: "json",
+  });
+}
+
+function deleteStudent(studentId) {
+  return $.ajax({
+    url: baseURL,
+    type: "DELETE",
+    contentType: "application/json",
+    data: JSON.stringify({ id: studentId }),
     dataType: "json",
   });
 }
